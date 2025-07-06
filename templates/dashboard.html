@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h1 {
+            margin: 0;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .navbar a {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .navbar a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dark-mode-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body.dark-mode .navbar {
+            background: rgba(30, 30, 30, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .navbar h1 {
+            background: linear-gradient(45deg, #8a9cff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        body.dark-mode .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body.dark-mode .column {
+            background: rgba(30, 30, 30, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .column h2 {
+            background: linear-gradient(45deg, #8a9cff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.dark-mode .column h2::after {
+            background: linear-gradient(45deg, #8a9cff, #a78bfa);
+        }
+
+        body.dark-mode .event-item, 
+        body.dark-mode .announcement-item {
+            background: linear-gradient(135deg, #2a2a3e 0%, #25293e 100%);
+            border-left: 4px solid #8a9cff;
+        }
+
+        body.dark-mode .event-name,
+        body.dark-mode .announcement-title {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .event-time {
+            color: #8a9cff;
+        }
+
+        body.dark-mode .event-location,
+        body.dark-mode .announcement-content {
+            color: #a0a0b0;
+        }
+
+        body.dark-mode .column h3 {
+            color: #8a9cff;
+        }
+
+        body.dark-mode .column p {
+            color: #b0b0c0;
+        }
+
+        .welcome-heading {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .column {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .column:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .column h2 {
+            margin-bottom: 20px;
+            border-bottom: 3px solid transparent;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding-bottom: 10px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .column h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .event-item, .announcement-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .event-item:hover, .announcement-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .event-time {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        
+        .event-location {
+            color: #666;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .announcement-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .announcement-content {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .announcement-item {
+            cursor: pointer;
+        }
+
+        .click-hint {
+            font-size: 0.8rem;
+            color: #667eea;
+            font-style: italic;
+            margin-top: 8px;
+            opacity: 0.7;
+        }
+
+        /* Announcement Popup Modal */
+        .announcement-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .announcement-modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            margin: 10% auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: left;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .announcement-close {
+            color: #999;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .announcement-close:hover {
+            color: #667eea;
+        }
+
+        .announcement-modal-title {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            clear: both;
+        }
+
+        .announcement-modal-time {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .announcement-modal-description {
+            color: #555;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        /* Dark mode styles for announcement modal */
+        body.dark-mode .announcement-modal-content {
+            background: rgba(30, 30, 30, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .announcement-modal-title {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .announcement-modal-time {
+            color: #8a9cff;
+        }
+
+        body.dark-mode .announcement-modal-description {
+            color: #b0b0c0;
+        }
+
+        body.dark-mode .click-hint {
+            color: #8a9cff;
+        }
+
+        .column h3 {
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        .column p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .welcome-heading {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Launchpad</h1>
+        <div class="navbar-right">
+            <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
+            <a href="/ask_question">Ask a Question</a>
+        </div>
+    </nav>
+    
+    <h1 class="welcome-heading">Welcome Hacker!</h1>
+    
+    <div class="dashboard-grid">        
+        <!-- Events Column -->
+        <div class="column">
+            <h2>Today's Events</h2>
+            {% for event in events %}
+            <div class="event-item">
+                <div class="event-name">{{ event.name }}</div>
+                <div class="event-time">{{ event.time }}</div>
+                <div class="event-location">{{ event.location }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Announcements Column -->
+        <div class="column">
+            <h2>Announcements</h2>
+            {% for announcement in announcements %}
+            <div class="announcement-item" onclick="showAnnouncementPopup('{{ announcement.title }}', '{{ announcement.content }}', '{{ announcement.description }}')">
+                <div class="announcement-title">{{ announcement.title }}</div>
+                <div class="announcement-content">{{ announcement.content }}</div>
+                <div class="click-hint">Click for details</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Information Column -->
+        <div class="column">
+            <h2>Hackathon Info</h2>
+
+                <h3>About Hack505</h3>
+                <p>Hack505 is a 36-hour hackathon in Toronto, ON. We're hoping to bring together 200 students who are passionate about learning and building to create projects that excite them. We're focused on our three pillars: education, innovation, and community.</p>
+            
+                <h3>Have a Question?</h3>
+                <p>Click the top right button to ask a mentor a question!</p>
+            
+                <h3>How Much Does It Cost?</h3>
+                <p>It's free! Just show up and we'll provide food, water, and everything you need. Just prepare your own transportation to get here!</p>
+        </div>
+    </div>
+
+    <!-- Announcement Details Modal -->
+    <div id="announcementModal" class="announcement-modal">
+        <div class="announcement-modal-content">
+            <span class="announcement-close" onclick="closeAnnouncementPopup()">&times;</span>
+            <h2 class="announcement-modal-title" id="modalTitle"></h2>
+            <div class="announcement-modal-time" id="modalTime"></div>
+            <div class="announcement-modal-description" id="modalDescription"></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            const body = document.body;
+            const darkModeToggle = document.querySelector('.dark-mode-toggle');
+            
+            body.classList.toggle('dark-mode');
+            
+            // Update the toggle button icon
+            if (body.classList.contains('dark-mode')) {
+                darkModeToggle.textContent = '☀️';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                darkModeToggle.textContent = '🌙';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+        
+        // Check for saved dark mode preference or default to light mode
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkMode = localStorage.getItem('darkMode');
+            const darkModeToggle = document.querySelector('.dark-mode-toggle');
+            
+            if (darkMode === 'enabled') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.textContent = '☀️';
+            } else {
+                darkModeToggle.textContent = '🌙';
+            }
+        });
+
+        // Announcement popup functions
+        function showAnnouncementPopup(title, time, description) {
+            const modal = document.getElementById('announcementModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalTime = document.getElementById('modalTime');
+            const modalDescription = document.getElementById('modalDescription');
+            
+            modalTitle.textContent = title;
+            modalTime.textContent = time;
+            modalDescription.textContent = description;
+            
+            modal.style.display = 'block';
+        }
+        
+        function closeAnnouncementPopup() {
+            document.getElementById('announcementModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('announcementModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeAnnouncementPopup();
+            }
+        });
+    </script>
+</body>
+</html>
