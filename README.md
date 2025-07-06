@@ -2,6 +2,10 @@
 
 A modern, interactive hackathon information dashboard built with Flask, featuring dark mode, responsive design, and real-time event management.
 
+## DEPENDENCIES
+
+please use `pip install flask` in cmd or powershell before running!
+
 ## Features
 
 - 🎯 **Interactive Event Schedule** - Real-time workshop and event listings
