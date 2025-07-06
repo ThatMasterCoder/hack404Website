@@ -107,25 +107,8 @@ This project was built during Hack505 to solve the common problem of scattered h
 - Building interactive modal components
 - Ensuring cross-browser compatibility
 
-## Future Enhancements
-
-- 🔄 Real-time updates with WebSockets
-- 🔐 User authentication and personalization
-- 📱 Push notifications for announcements
-- 🎮 Integration with Discord/Slack
-- 📊 Analytics dashboard for organizers
-- 🌍 Multi-language support
-
-## Contributing
-
-We welcome contributions! Please feel free to submit issues and pull requests.
 
 ## License
 
 This project is open source and available under the MIT License.
 
----
-
-**Built with ❤️ during Hack505 in Toronto, ON**
-
-*Bringing together students passionate about learning, innovation, and community.*
